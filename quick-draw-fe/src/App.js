@@ -8,6 +8,9 @@ const MainLayout = loadable(() => import('./global/layouts/MainLayout'));
 /* drawing pages */
 const DrawPage = loadable(() => import('./drawing/pages/DrawPage'));
 
+/* login 페이지 */
+const LoginPage = loadable(() => import("./member/pages/LoginPage"));
+
 const App = () => {
   return (
     <Routes>
@@ -15,6 +18,8 @@ const App = () => {
         <Route index element={<MainPage />} />
 
         <Route path="draw" element={<DrawPage />} />
+
+        <Route path="member/login" element={<LoginPage />} />
 
         <Route path="*" element={<NotFoundPage />} />
       </Route>
