@@ -3,8 +3,9 @@ import styled from 'styled-components';
 import { MediumButton } from '../../global/components/Buttons';
 import color from '../../global/styles/color';
 import fontsize from '../../global/styles/fontsize';
+import MessageBox from '../../global/components/MessageBox';
 
-const { primary, dark } = color;
+const { dark } = color;
 const { medium } = fontsize;
 
 const StyledForm = styled.form`
@@ -44,6 +45,7 @@ const LoginForm = ({ form, onChange, onSubmit, errors }) => {
         value={form.email ?? ''}
         onChange={onChange}
       />
+      <MessageBox theme="danger">{errors.email}</MessageBox>
       <input
         type="password"
         name="password"
@@ -51,6 +53,8 @@ const LoginForm = ({ form, onChange, onSubmit, errors }) => {
         value={form.password ?? ''}
         onChange={onChange}
       />
+      <MessageBox theme="danger">{errors.password}</MessageBox>
+
       <MediumButton type="submit" width="100%">
         로그인
       </MediumButton>
