@@ -8,5 +8,6 @@ export default function useLogout() {
   return () => {
     setIsLogin(false);
     setLoggedMember(null);
+    cookie.remove()
   };
 }

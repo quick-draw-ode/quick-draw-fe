@@ -2,6 +2,8 @@ import React, { useState, useCallback, useContext } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import CommonContext from '../../global/contexts/CommonContext';
 import LoginForm from '../components/LoginForm';
+import useFetch from '../../global/hooks/useFetch';
+import { cookie } from 'react-cookies';
 
 const LoginContainer = () => {
   const [form, setForm] = useState({});
@@ -12,6 +14,7 @@ const LoginContainer = () => {
 
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const fetchCSR = useFetch();
 
   const onChange = useCallback(e => {
     setForm(form => ({ ...form, [e.target.name]: e.target.value }));
@@ -44,14 +47,25 @@ const LoginContainer = () => {
       }
 
       // 로그인 처리...
-      // 아래 데이터는 서버에서 전송된 인증된 회원 정보를 가정한 것
-      const member = {
-        seq: 1,
-        email: 'koyounghee@test.org',
-        name: '고영희',
-      };
-      setIsLogin(true);
-      setLoggedMember(member);
+      (async () => {
+        const res = await fetchCSR('/member/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(form),
+        });
+        if (res.ok) {
+          // 토큰 발급 성공, 토큰을 쿠키에 유지
+          const token = await res.text();
+          cookie.save('token', token, { path: '/' });
+
+          // 로그인 완료 시 이동
+          const redirectUrl = searchParams.get('redirectUrl') ?? '/';
+          navigate(redirectUrl, { replace: true });
+        } else {
+          const data = await res.json();
+          errors.global = data.messages;
+        }
+      })();
 
       // 양식 초기화
       setForm({});
